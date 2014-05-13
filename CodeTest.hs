@@ -13,16 +13,15 @@ import System.Locale (defaultTimeLocale)
 
 main = do
   putStrLn "Output 1:"
-  mapM_ (putStrLn . show) $ sortByGenderAndLastNameAscending ps
+  mapM_ print $ sortByGenderAndLastNameAscending ps
   putStrLn ""
-
   putStrLn "Output 2:"
-  mapM_ (putStrLn . show) $ sortByBirthDateAscending ps
+  mapM_ print $ sortByBirthDateAscending ps
+  putStrLn ""
+  putStrLn "Output 3:"
+  mapM_ print $ sortByLastNameDescending ps
   putStrLn ""
 
-  putStrLn "Output 3:"
-  mapM_ (putStrLn . show) $ sortByLastNameDescending ps
-  putStrLn ""
 
 -- Model
 data Gender = Male | Female deriving (Eq, Show)
