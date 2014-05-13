@@ -1,10 +1,30 @@
-module CodeTest where
+module CodeTest
+  (Person,
+   Gender,
+   sortByGenderAndLastNameAscending,
+   sortByBirthDateAscending,
+   sortByLastNameDescending)
+where
 
 import Data.List (intercalate, sortBy)
 import Data.Time (utctDay, Day, UTCTime)
 import Data.Time.Format (readTime)
 import System.Locale (defaultTimeLocale)
 
+main = do
+  putStrLn "Output 1:"
+  mapM_ (putStrLn . show) $ sortByGenderAndLastNameAscending ps
+  putStrLn ""
+
+  putStrLn "Output 2:"
+  mapM_ (putStrLn . show) $ sortByBirthDateAscending ps
+  putStrLn ""
+
+  putStrLn "Output 3:"
+  mapM_ (putStrLn . show) $ sortByLastNameDescending ps
+  putStrLn ""
+
+-- Model
 data Gender = Male | Female deriving (Eq, Show)
 type Name = String
 type FirstName = Name
@@ -12,11 +32,21 @@ type LastName = Name
 type Color = String
 type DOB = Day
 
-data Person = Person FirstName LastName Gender Color DOB deriving (Eq)
+data Person = Person { firstName :: Name, lastName :: Name, gender :: Gender, favoriteColor :: Color, dateOfBirth :: DOB } deriving (Eq)
 
 instance Show Person where
   show (Person fn ln g c dob) = intercalate " " [ln, fn, show g, show dob, c]
 
+sortByGenderAndLastNameAscending :: [Person] -> [Person]
+sortByGenderAndLastNameAscending = sortBy genderAndLastNameAscending
+
+sortByBirthDateAscending :: [Person] -> [Person]
+sortByBirthDateAscending = sortBy birthDateAscending
+
+sortByLastNameDescending :: [Person] -> [Person]
+sortByLastNameDescending = sortBy lastNameDescending
+
+-- Sort Orderings
 genderAndLastNameAscending :: Person -> Person -> Ordering
 genderAndLastNameAscending (Person _ ln1 g1 _ _) (Person _ ln2 g2 _ _)
   | g1 == Female && g2 == Male = LT
@@ -29,15 +59,6 @@ birthDateAscending (Person _ _ _ _ dob1) (Person _ _ _ _ dob2) = compare dob1 do
 lastNameDescending :: Person -> Person -> Ordering
 lastNameDescending (Person _ ln1 _ _ _) (Person _ ln2 _ _ _) = compare ln2 ln1
 
-sortByGenderAndLastNameAscending :: [Person] -> [Person]
-sortByGenderAndLastNameAscending = sortBy genderAndLastNameAscending
-
-sortByBirthDateAscending :: [Person] -> [Person]
-sortByBirthDateAscending = sortBy birthDateAscending
-
-sortByLastNameDescending :: [Person] -> [Person]
-sortByLastNameDescending = sortBy lastNameDescending
-
 -- UTILITY STUFF TO HELP WITH GHCI TESTING
 makeGender :: String -> Gender
 makeGender g
@@ -45,9 +66,8 @@ makeGender g
   | g == "Male" = Male
 
 makePersonWithSlashDates :: String -> String -> String -> String -> String -> Person
-makePersonWithSlashDates ln fn g dob c = Person fn ln gender c day
-  where gender = makeGender g
-        day = utctDay (readTime defaultTimeLocale "%-m/%-d/%Y" dob :: UTCTime)
+makePersonWithSlashDates ln fn g dob c = Person fn ln (makeGender g) c day
+  where day = utctDay (readTime defaultTimeLocale "%-m/%-d/%Y" dob :: UTCTime)
 
 p1 = makePersonWithSlashDates "Hingis" "Martina" "Female" "4/2/1979" "Green"
 p2 = makePersonWithSlashDates "Kelly" "Sue" "Female" "7/12/1959" "Pink"
