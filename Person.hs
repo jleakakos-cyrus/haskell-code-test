@@ -17,7 +17,7 @@ import Data.Time.Format (readTime)
 import System.Locale (defaultTimeLocale)
 import qualified Data.Text as T
 
-data Gender = Male | Female deriving (Eq, Show)
+data Gender = Male | Female | Other deriving (Eq, Show)
 
 data Person = Person { firstName :: T.Text, lastName :: T.Text, gender :: Gender, favoriteColor :: T.Text, dateOfBirth :: Day } deriving (Eq)
 
@@ -50,6 +50,7 @@ makeGender :: T.Text -> Gender
 makeGender g
   | g == "Female" || g == "F" = Female
   | g == "Male" || g == "M" = Male
+  | otherwise = Other
 
 newtype DateFormat = DateFormat T.Text deriving (Show)
 
