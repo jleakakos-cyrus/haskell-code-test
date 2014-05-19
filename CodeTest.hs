@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module CodeTest where
+module Main where
 
 import Person
 import Person (makeGender, makeDay, dateDashFormat, dateSlashFormat, Person(..))
