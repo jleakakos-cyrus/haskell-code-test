@@ -7,6 +7,7 @@ import Data.List.Split (splitOn)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
+main :: IO ()
 main = do
   pipeContent <- TIO.readFile "data/pipe.txt"
   let pipeLines = T.lines pipeContent
