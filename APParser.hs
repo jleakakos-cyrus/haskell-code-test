@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module APParser where
+module Main where
+
 import Prelude hiding (takeWhile)
-import System.IO.Unsafe
 import Person
 
 import Data.Char (isAlpha, isSpace)
@@ -30,28 +30,29 @@ main = do
   putStrLn ""
 
 parseCommaPeople :: Parser [Person]
-parseCommaPeople = many' $ (parseCommaPerson) <* (endOfLine <|> endOfInput)
+parseCommaPeople = sepBy parseCommaPerson endOfLine
 
 parsePipePeople :: Parser [Person]
-parsePipePeople = many' $ (parsePipePerson) <* (endOfLine <|> endOfInput)
+parsePipePeople = sepBy parsePipePerson endOfLine
 
 parseSpacePeople :: Parser [Person]
-parseSpacePeople = manyTill (parseSpacePerson <* endOfLine) endOfInput
+parseSpacePeople = sepBy parseSpacePerson endOfLine
 
 parseSpacePerson :: Parser Person
 parseSpacePerson =
    do
-    ln <- takeWhile isAlpha
     skipSpace
-    fn <- takeWhile isAlpha
+    ln <- takeTill isSpace
     skipSpace
-    mi <- takeWhile isAlpha
+    fn <- takeTill isSpace
     skipSpace
-    g <- takeWhile isAlpha
+    mi <- takeTill isSpace
+    skipSpace
+    g <- takeTill isSpace
     skipSpace
     dob <- takeTill isSpace
     skipSpace
-    fc <- takeWhile isAlpha
+    fc <- takeTill isSpace
     return $ Person fn ln (makeGender g) fc (makeDay dateDashFormat dob)
 
 skipDelim :: Char -> Parser ()
